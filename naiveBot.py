@@ -4,36 +4,21 @@ from chatterbot import ChatBot
 # Create object of ChatBot class with Logic Adapter
 bot = ChatBot(
     'Chappie',  
+    storage_adapter='chatterbot.storage.SQLStorageAdapter',
     logic_adapters=[
-        'chatterbot.logic.BestMatch',
-        'chatterbot.logic.TimeLogicAdapter'],
+        'chatterbot.logic.MathematicalEvaluation',
+        'chatterbot.logic.TimeLogicAdapter'
+    ],
+    database_uri='sqlite:///database.sqlite3'
 )
 
-# Inport ListTrainer
-from chatterbot.trainers import ListTrainer
-
-trainer = ListTrainer(bot)
-
-trainer.train([
-'Hi',
-'Hello',
-'I need your assistance regarding my order',
-'Please, Provide me with your order id',
-'I have a complaint.',
-'Please elaborate, your concern',
-'How long it will take to receive an order ?',
-'An order takes 3-5 Business days to get delivered.',
-'Okay Thanks',
-'No Problem! Have a Good Day!'
-])
-
-name=input("Enter Your Name: ")
-print("Welcome to the Bot Service! Let me know how can I help you?")
 while True:
-    request=input(name+':')
-    if request=='Bye' or request =='bye':
-        print('Bot: Bye')
+    try:
+        bot_input = bot.get_response(input())
+        print(bot_input)
+
+    except(KeyboardInterrupt, EOFError, SystemExit):
         break
-    else:
-        response=bot.get_response(request)
-        print('Bot:',response)
+
+    if input() == 'au revoir':
+        break
